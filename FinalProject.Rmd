@@ -346,14 +346,15 @@ cat("Bong Joon Ho's most common genre is", bong_joon_ho_genre, "\n")
 ```
 
 
-Are there any correlation in the top directors genre?
-
 
 As you see two of each decade's best director most commonly made Drama Movies.
 
 
 
 ----------------
+
+
+This scatter plot shows the correlation between gross revenue and IMDb ratings of all the movies in the dataset. This allows us to see if the gross revenue of a movie has an effect on its IMDb rating. From this scatter plot, we can see that there is a weak but positive correlation between the two variables.
 
 
 ```{r}
@@ -374,6 +375,9 @@ ggplot(imdbGross, aes(x = Gross, y = IMDB_Rating)) +
   theme_minimal()
 ```
 
+This graph shows the frequency distribution of gross earnings from the dataset. We had to convert the “Gross” column to the numeric format as there originally were commas in the values. This graph is useful to see how frequently different ranges of gross earnings occur among the movies in the dataset. It also helps identify outliers and provide insights into successful and unsuccessful movies.
+
+
 ```{r}
 library(ggplot2)
 
@@ -391,6 +395,8 @@ ggplot(imdb, aes(x = Gross)) +
        x = "Gross Earnings", y = "Frequency") +
   theme_minimal()
 ```
+
+This scatter plot helps us visualize the correlation between movie runtime and IMDb ratings. This correlation is slightly weak but positive. Here, we are looking at if a movie’s runtime influences its IMDb rating.
 
 ```{r}
 library(ggplot2)
@@ -410,6 +416,8 @@ ggplot(imdbRuntime, aes(x = Runtime, y = IMDB_Rating)) +
   theme_minimal()
 ```
 
+This graph provides insight into the distribution of movie runtimes in the dataset, allowing us to see how common different runtime lengths are among the movies. This will help us create different ranges of runtimes and see their average IMDb ratings, then we can see what would be an ideal runtime for a movie.
+
 ```{r}
 # Convert Runtime to numeric format
 imdb$Runtime <- as.numeric(gsub(" min", "", imdb$Runtime))
@@ -421,6 +429,8 @@ ggplot(imdb, aes(x = Runtime)) +
        x = "Runtime (minutes)", y = "Frequency") +
   theme_minimal()
 ```
+This graph visualizes the distribution of IMDb ratings and helps us identify the central tendency of IMDb ratings, indicating the most common or typical ratings. Peaks in the histogram suggest where the most ratings are concentrated, providing insight into the average or typical perception of movie quality among viewers.
+
 
 ```{r}
 ggplot(imdb, aes(x = IMDB_Rating)) +
@@ -429,6 +439,8 @@ ggplot(imdb, aes(x = IMDB_Rating)) +
        x = "IMDb Rating", y = "Frequency") +
   theme_minimal()
 ```
+This box plot visualizes the distribution of IMDb ratings across different ranges of movie runtimes. This graph helps us identify the medians of each range which allows us to compare the medians across the different ranges. By comparing the box plots across different runtime ranges, we can assess whether there are significant differences in IMDb ratings based on movie runtimes.
+
 
 ```{r}
 library(ggplot2)
@@ -443,6 +455,9 @@ ggplot(imdb, aes(x = cut(Runtime, breaks = 10), y = IMDB_Rating)) +
        x = "Runtime (minutes)", y = "IMDb Rating") +
   theme_minimal()
 ```
+
+This graph identifies the top ten movies with the longest runtimes in the dataset. This information is valuable for identifying the top end of the spectrum.
+
 
 ```{r}
 library(ggplot2)
@@ -464,6 +479,9 @@ ggplot(top_ten_runtime, aes(x = reorder(Series_Title, Runtime), y = Runtime)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   coord_flip()
 ```
+
+This table orders the top ten movies with the longest runtimes by their IMDb ratings in descending order. This will help us see what the top end of the spectrum regarding runtime is being rated. We will be able to see whether audiences prefer longer movies over shorter ones or vice versa.
+
 
 ```{r}
 
@@ -487,6 +505,8 @@ average_rating <- mean(top_ten_ratings)
 print(average_rating)
 ```
 
+Like the top ten runtimes, we look at the other end of the spectrum regarding runtime length.
+
 ```{r}
 bottom_ten_runtime <- imdb[order(imdb$Runtime, decreasing = FALSE), ][1:10, ]
 
@@ -499,6 +519,8 @@ ggplot(bottom_ten_runtime, aes(x = reorder(Series_Title, Runtime), y = Runtime))
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   coord_flip()
 ```
+
+This table orders the bottom ten movies with the longest runtimes by their IMDb ratings in descending order. This will help us see what the bottom end of the spectrum regarding runtime is being rated. We can also see the average of the bottom ten movies and compare that to the average of the top ten.
 
 ```{r}
 bottom_ten_runtime <- imdb[order(imdb$Runtime, decreasing = FALSE), ][1:10, ]
@@ -520,6 +542,9 @@ average_rating <- mean(bottom_ten_ratings)
 print(average_rating)
 ```
 
+Like the top and bottom ten runtimes, we look at the top ten grossing movies to dive deeper into the correlation between the gross revenue and IMDb rating.
+
+
 ```{r}
 library(scales)
 
@@ -533,6 +558,8 @@ ggplot(top_ten_grossing, aes(x = reorder(Series_Title, Gross), y = Gross)) +
   scale_y_continuous(labels = scales::comma, breaks = c(0, 250000000, 500000000, 750000000)) +
   coord_flip()
 ```
+
+This table organizes the top ten grossing movies in descending order based on their IMDb ratings and we can get an average IMDb rating for the 10 movies and compare that to the overall average and the bottom ten average.
 
 ```{r}
 # Select the top ten movies with the highest gross earnings
@@ -548,6 +575,8 @@ top_ten_ratings_table <- top_ten_ratings_table[order(top_ten_ratings_table$IMDb_
 print(top_ten_ratings_table)
 ```
 
+This graph identifies the bottom ten grossing movies and their revenues.
+
 ```{r}
 # Select the bottom ten movies with the lowest gross earnings
 bottom_ten_grossing <- imdb[order(imdb$Gross), ][1:10, ]
@@ -561,6 +590,9 @@ ggplot(bottom_ten_grossing, aes(x = reorder(Series_Title, Gross), y = Gross)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   coord_flip()
 ```
+
+This table orders the bottom ten grossing movies by their IMDb ratings in descending order. The table will allow us to compare the average IMDb ratings of the two ends of the gross revenue spectrum to see if a higher-grossing movie will, on average, have a higher IMDb rating than a lower-grossing movie.
+
 
 ```{r}
 bottom_ten_grossing <- imdb[order(imdb$Gross), ][1:10, ]
