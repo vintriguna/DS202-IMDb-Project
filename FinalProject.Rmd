@@ -1,0 +1,3 @@
+# DS 202 Final Project: Movies Analysis
+
+## Created by Ishan Patel, Ethan Mangelsdorf, Vinayak Trigunayat
