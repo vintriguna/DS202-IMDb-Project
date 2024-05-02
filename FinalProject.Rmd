@@ -150,7 +150,7 @@ Topic 2 Director Ethan
 Graph 1: Bar graph with all directors with their frequency 
 ```{r}
 
-# Assuming 'imdb' is your dataset
+
 # Split directors and count the frequency of each director
 director_counts <- imdb %>%
   group_by(Director) %>%
