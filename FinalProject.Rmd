@@ -100,6 +100,9 @@ ggplot(genre_counts, aes(x = Genre, y = Frequency, fill = Genre)) +
 ```
 
 
+This code first splits the genres listed for each movie, counts the frequency of each genre, and then creates a bar plot showing the frequency of each genre in the IMDb dataset. Drama is the most frequent.
+
+
 What is the average IMDB Rating per Genre
 
 
@@ -122,6 +125,9 @@ ggplot(genre_avg_ratings, aes(x = Genre, y = Avg_IMDB_Rating, fill = Genre)) +
 ```
 
 
+This code calculates the average IMDb rating for each genre in the IMDb dataset. It first splits the genres listed for each movie, calculates the mean IMDb rating for each genre, and then creates a bar plot showing the average IMDb rating for each genre.
+
+Western being the highest average IMDB score.
 
 
 ```{r}
@@ -170,6 +176,9 @@ ggplot(top_director_counts, aes(x = reorder(Director, Frequency), y = Frequency,
 
 
 
+This code segment analyzes the frequency of directors in the IMDb dataset. It first counts the number of movies each director has made, then selects the top 10 most frequent directors. Finally, it creates a bar plot showing the frequency of movies directed by each of the top 10 directors
+
+Alfred Hitchcock being the most frequent.
 
 
 What are the top 3 directors in 1990’s?
@@ -205,7 +214,7 @@ ggplot(top3_directors_1990s, aes(x = reorder(Director, Avg_IMDB_Rating), y = Avg
 ```
 
 
-
+This code filters the IMDb dataset to include only movies released in the 1990s. It then calculates the average IMDb rating for each director based on their movies in the 1990s, selects the top 3 directors with the highest average ratings, and creates a bar plot showing their average ratings.
 
 
 
@@ -243,7 +252,7 @@ ggplot(top3_directors_2000s, aes(x = reorder(Director, Avg_IMDB_Rating), y = Avg
 
 ```
 
-
+Same as before but for the 2000's
 
 
 
@@ -278,6 +287,7 @@ ggplot(top3_directors_2010s, aes(x = reorder(Director, Avg_IMDB_Rating), y = Avg
 
 ```
 
+Same as before but for the 2010's
 
 The number 1 highest scored director from each decade is :
 
@@ -312,7 +322,9 @@ cat("Bong Joon Ho's amount of movies is", bong_joon_ho_count, "\n")
 
 ```
 
-
+Frank Darabont's amount of movies is 2 
+Peter Jackson's amount of movies is 5 
+Bong Joon Ho's amount of movies is 3
 
 Write each directors most common genre?
 
@@ -345,7 +357,9 @@ cat("Bong Joon Ho's most common genre is", bong_joon_ho_genre, "\n")
 
 ```
 
-
+Frank Darabont's most common genre is Drama 
+Peter Jackson's most common genre is Adventure 
+Bong Joon Ho's most common genre is Drama 
 
 As you see two of each decade's best director most commonly made Drama Movies.
 
