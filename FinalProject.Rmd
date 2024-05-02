@@ -23,3 +23,565 @@
 ## Potential Limitations:
 
 
+#Final Project Analysis of Top IMDB Movies:
+
+
+<<<<<<< HEAD
+
+=======
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*Introduction:*
+
+This project intends to analyse the features of the top IMDb movies of all time. 
+
+
+
+```{r}
+library(tidyverse)
+imdb <- read.csv("imdb_top_1000.csv")
+head(imdb)
+```
+
+*Cleaning: *
+```{r}
+#Data Cleaning:
+
+#Remove some columns
+imdb <- imdb %>% select(-Poster_Link,-Overview)
+results <- data.frame(name=rep(0,14),count=rep(0,14))
+#Check how many NAs
+for (column in 1:14) {
+  #print(imdb[column])
+  results$name[column] <- colnames(imdb[column])
+  results$count[column] <- sum(is.na(imdb[column]))
+}
+
+#We observe that there are only NA values in the Meta_score.
+
+ # imdb2 <- imdb %>% separate(`Genre`, sep=",", into)
+
+```
+>>>>>>> 83ba0457a9196ba3b477d38a949e5006d4513c72
+
+
+
+Topic 1: Genres 
+
+What are the highest rated genres?
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+
+# Split genres and count the frequency of each genre
+genre_counts <- imdb %>%
+  mutate(Genre = strsplit(Genre, ", ")) %>%
+  unnest(Genre) %>%
+  group_by(Genre) %>%
+  summarize(Frequency = n()) %>%
+  arrange(desc(Frequency))
+
+# Reorder the Genre factor by Frequency
+genre_counts$Genre <- factor(genre_counts$Genre, levels = genre_counts$Genre[order(genre_counts$Frequency, decreasing = TRUE)])
+
+# Create a bar plot
+ggplot(genre_counts, aes(x = Genre, y = Frequency, fill = Genre)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Frequency of Genres in IMDb Dataset",
+       x = "Genre",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
+
+What is the average IMDB Rating per Genre
+
+
+
+```{r}
+# Calculate the average IMDb rating for each genre
+genre_avg_ratings <- imdb %>%
+  mutate(Genre = strsplit(Genre, ", ")) %>%
+  unnest(Genre) %>%
+  group_by(Genre) %>%
+  summarize(Avg_IMDB_Rating = mean(IMDB_Rating, na.rm = TRUE))
+
+# Create a bar plot for average IMDb rating
+ggplot(genre_avg_ratings, aes(x = Genre, y = Avg_IMDB_Rating, fill = Genre)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Average IMDb Rating for Genres in IMDb Dataset",
+       x = "Genre",
+       y = "Average IMDb Rating") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+
+
+
+```{r}
+
+library(knitr)
+
+table <- kable(genre_avg_ratings, caption = "Average IMDb Rating for Genres in IMDb Dataset")
+
+# Print the table
+print(table)
+```
+
+
+
+
+
+
+Topic 2 Director Ethan 
+
+Graph 1: Bar graph with all directors with their frequency 
+```{r}
+
+# Assuming 'imdb' is your dataset
+# Split directors and count the frequency of each director
+director_counts <- imdb %>%
+  group_by(Director) %>%
+  summarize(Frequency = n()) %>%
+  arrange(desc(Frequency))
+
+# Select the top 10 directors
+top_directors <- head(director_counts$Director, 10)
+
+# Filter the dataset to include only the top 10 directors
+top_director_counts <- director_counts %>%
+  filter(Director %in% top_directors)
+
+# Create a bar plot for the top 10 directors
+ggplot(top_director_counts, aes(x = reorder(Director, Frequency), y = Frequency, fill = Director)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 10 Most Frequent Directors in IMDb Dataset",
+       x = "Director",
+       y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+
+
+
+
+What are the top 3 directors in 1990’s?
+
+```{r}
+
+
+# Filter the dataset to include only movies from the 1990s
+movies_1990s <- imdb %>%
+  filter(Released_Year >= 1990 & Released_Year < 2000)
+
+# Calculate the average IMDb score for each director
+director_avg_ratings_1990s <- movies_1990s %>%
+  mutate(Director = strsplit(Director, ", ")) %>%
+  unnest(Director) %>%
+  group_by(Director) %>%
+  summarize(Avg_IMDB_Rating = mean(IMDB_Rating, na.rm = TRUE)) %>%
+  arrange(desc(Avg_IMDB_Rating))
+
+# Select the top 3 directors
+top3_directors_1990s <- head(director_avg_ratings_1990s, 3)
+
+# Create a bar plot for the top 3 directors
+ggplot(top3_directors_1990s, aes(x = reorder(Director, Avg_IMDB_Rating), y = Avg_IMDB_Rating, fill = Director)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 3 Directors in the 1990s by Average IMDb Rating",
+       x = "Director",
+       y = "Average IMDb Rating") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+```
+
+
+
+
+
+
+
+What are the top 3 directors in 2000’s?
+
+
+```{r}
+
+
+# Filter the dataset to include only movies from the 2000s
+movies_2000s <- imdb %>%
+  filter(Released_Year >= 2000 & Released_Year < 2010)
+
+# Calculate the average IMDb score for each director
+director_avg_ratings_2000s <- movies_2000s %>%
+  mutate(Director = strsplit(Director, ", ")) %>%
+  unnest(Director) %>%
+  group_by(Director) %>%
+  summarize(Avg_IMDB_Rating = mean(IMDB_Rating, na.rm = TRUE)) %>%
+  arrange(desc(Avg_IMDB_Rating))
+
+# Select the top 3 directors
+top3_directors_2000s <- head(director_avg_ratings_2000s, 3)
+
+# Create a bar plot for the top 3 directors
+ggplot(top3_directors_2000s, aes(x = reorder(Director, Avg_IMDB_Rating), y = Avg_IMDB_Rating, fill = Director)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 3 Directors in the 2000s by Average IMDb Rating",
+       x = "Director",
+       y = "Average IMDb Rating") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+```
+
+
+
+
+
+What are the top 3 directors in 2010’s?
+
+
+```{r}
+# Filter the dataset to include only movies from the 2010s
+movies_2010s <- imdb %>%
+  filter(Released_Year >= 2010 & Released_Year < 2020)
+
+# Calculate the average IMDb score for each director
+director_avg_ratings_2010s <- movies_2010s %>%
+  mutate(Director = strsplit(Director, ", ")) %>%
+  unnest(Director) %>%
+  group_by(Director) %>%
+  summarize(Avg_IMDB_Rating = mean(IMDB_Rating, na.rm = TRUE)) %>%
+  arrange(desc(Avg_IMDB_Rating))
+
+# Select the top 3 directors
+top3_directors_2010s <- head(director_avg_ratings_2010s, 3)
+
+# Create a bar plot for the top 3 directors
+ggplot(top3_directors_2010s, aes(x = reorder(Director, Avg_IMDB_Rating), y = Avg_IMDB_Rating, fill = Director)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Top 3 Directors in the 2010s by Average IMDb Rating",
+       x = "Director",
+       y = "Average IMDb Rating") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+
+```
+
+
+The number 1 highest scored director from each decade is :
+
+Frank Darabont 1990's
+
+Peter Jackson 2000's
+
+Bong Joon Ho 2010's
+
+
+
+```{r}
+# Filter the dataset for each director
+frank_darabont_movies <- imdb %>%
+  filter(str_detect(Director, "Frank Darabont"))
+
+peter_jackson_movies <- imdb %>%
+  filter(str_detect(Director, "Peter Jackson"))
+
+bong_joon_ho_movies <- imdb %>%
+  filter(str_detect(Director, "Bong Joon Ho"))
+
+# Count the number of movies for each director
+frank_darabont_count <- nrow(frank_darabont_movies)
+peter_jackson_count <- nrow(peter_jackson_movies)
+bong_joon_ho_count <- nrow(bong_joon_ho_movies)
+
+# Print the counts with custom messages
+cat("Frank Darabont's amount of movies is", frank_darabont_count, "\n")
+cat("Peter Jackson's amount of movies is", peter_jackson_count, "\n")
+cat("Bong Joon Ho's amount of movies is", bong_joon_ho_count, "\n")
+
+```
+
+
+
+Write each directors most common genre?
+
+```{r}
+# Function to find the most common genre for a director
+find_most_common_genre <- function(director_movies) {
+  genre_counts <- director_movies %>%
+    mutate(Genre = strsplit(Genre, ", ")) %>%
+    unnest(Genre) %>%
+    group_by(Genre) %>%
+    summarize(Frequency = n()) %>%
+    arrange(desc(Frequency))
+  
+  most_common_genre <- genre_counts$Genre[1]
+  return(most_common_genre)
+}
+
+# Find the most common genre for each director
+frank_darabont_genre <- find_most_common_genre(frank_darabont_movies)
+peter_jackson_genre <- find_most_common_genre(peter_jackson_movies)
+bong_joon_ho_genre <- find_most_common_genre(bong_joon_ho_movies)
+
+# Print the most common genres
+cat("Frank Darabont's most common genre is", frank_darabont_genre, "\n")
+cat("Peter Jackson's most common genre is", peter_jackson_genre, "\n")
+cat("Bong Joon Ho's most common genre is", bong_joon_ho_genre, "\n")
+
+
+
+
+```
+
+
+Are there any correlation in the top directors genre?
+
+
+As you see two of each decade's best director most commonly made Drama Movies.
+
+
+
+----------------
+
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Convert Gross to numeric format and remove NA values
+imdbGross <- imdb %>%
+  mutate(Gross = as.numeric(gsub(",", "", Gross))) %>%
+  filter(!is.na(Gross))
+
+ggplot(imdbGross, aes(x = Gross, y = IMDB_Rating)) +
+  geom_point(color = "skyblue", alpha = 0.6) +  # Scatter plot
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Add best-fit line
+  labs(title = "Correlation Between Gross Earnings and IMDb Rating",
+       x = "Gross Earnings", y = "IMDb Rating") +
+  scale_x_continuous(labels = scales::comma) +
+  theme_minimal()
+```
+
+```{r}
+library(ggplot2)
+
+# Convert Gross to numeric format
+imdb$Gross <- as.numeric(gsub(",", "", imdb$Gross))
+
+# Define the bin width for the histogram
+bin_width <- 50000000  # Adjust the bin width to suit the range of gross earnings
+
+# Create the histogram
+ggplot(imdb, aes(x = Gross)) +
+  geom_histogram(binwidth = bin_width, fill = "skyblue", color = "black") +
+  scale_x_continuous(labels = scales::comma) +  # Format x-axis labels with commas
+  labs(title = "Frequency of Gross Earnings",
+       x = "Gross Earnings", y = "Frequency") +
+  theme_minimal()
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Convert Runtime to numeric format and remove NA values
+imdbRuntime <- imdb %>%
+  mutate(Runtime = as.numeric(gsub(" min", "", Runtime))) %>%
+  filter(!is.na(Runtime))
+
+# Create the scatter plot
+ggplot(imdbRuntime, aes(x = Runtime, y = IMDB_Rating)) +
+  geom_point(color = "skyblue", alpha = 0.6) +  # Scatter plot
+  geom_smooth(method = "lm", se = FALSE, color = "red") +  # Add best-fit line
+  labs(title = "Correlation Between Runtime and IMDb Rating",
+       x = "Runtime (minutes)", y = "IMDb Rating") +
+  theme_minimal()
+```
+
+```{r}
+# Convert Runtime to numeric format
+imdb$Runtime <- as.numeric(gsub(" min", "", imdb$Runtime))
+
+# Create the histogram for Runtime
+ggplot(imdb, aes(x = Runtime)) +
+  geom_histogram(binwidth = 10, fill = "skyblue", color = "black") +
+  labs(title = "Histogram of Runtime",
+       x = "Runtime (minutes)", y = "Frequency") +
+  theme_minimal()
+```
+
+```{r}
+ggplot(imdb, aes(x = IMDB_Rating)) +
+  geom_histogram(binwidth = 0.1, fill = "skyblue", color = "black") +
+  labs(title = "Histogram of IMDb Rating",
+       x = "IMDb Rating", y = "Frequency") +
+  theme_minimal()
+```
+
+```{r}
+library(ggplot2)
+
+# Convert Runtime to numeric format
+imdb$Runtime <- as.numeric(gsub(" min", "", imdb$Runtime))
+
+# Create the box plot
+ggplot(imdb, aes(x = cut(Runtime, breaks = 10), y = IMDB_Rating)) +
+  geom_boxplot(fill = "skyblue", color = "black") +
+  labs(title = "Box Plot of IMDb Ratings by Runtime",
+       x = "Runtime (minutes)", y = "IMDb Rating") +
+  theme_minimal()
+```
+
+```{r}
+library(ggplot2)
+
+# Assuming 'imdb' is your dataframe containing the entire dataset
+
+# Convert 'Runtime' column to numeric format
+imdb$Runtime <- as.numeric(gsub(" min", "", imdb$Runtime))
+
+# Select the top ten movies with the longest runtime
+top_ten_runtime <- imdb[order(imdb$Runtime, decreasing = TRUE), ][1:10, ]
+
+# Create a bar chart for the top ten runtimes
+ggplot(top_ten_runtime, aes(x = reorder(Series_Title, Runtime), y = Runtime)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Top Ten Runtimes",
+       x = "Movie",
+       y = "Runtime (minutes)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip()
+```
+
+```{r}
+
+top_ten_runtime <- imdb[order(imdb$Runtime, decreasing = TRUE), ][1:10, ]
+
+top_ten_ratings <- top_ten_runtime$IMDB_Rating
+
+
+
+top_ten_table <- data.frame(Movie = top_ten_runtime$Series_Title, IMDb_Rating = top_ten_ratings)
+
+# Order the table by IMDb ratings in descending order
+top_ten_table <- top_ten_table[order(top_ten_table$IMDb_Rating, decreasing = TRUE), ]
+
+# Print the table
+print(top_ten_table)
+
+average_rating <- mean(top_ten_ratings)
+
+# Print the average rating
+print(average_rating)
+```
+
+```{r}
+bottom_ten_runtime <- imdb[order(imdb$Runtime, decreasing = FALSE), ][1:10, ]
+
+# Create a bar chart for the bottom ten runtimes
+ggplot(bottom_ten_runtime, aes(x = reorder(Series_Title, Runtime), y = Runtime)) +
+  geom_bar(stat = "identity", fill = "red") +
+  labs(title = "Bottom Ten Runtimes",
+       x = "Movie",
+       y = "Runtime (minutes)") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip()
+```
+
+```{r}
+bottom_ten_runtime <- imdb[order(imdb$Runtime, decreasing = FALSE), ][1:10, ]
+
+# Subset IMDb ratings for the bottom ten movies
+bottom_ten_ratings <- bottom_ten_runtime$IMDB_Rating
+
+# Create a dataframe with movie titles and IMDb ratings
+bottom_ten_table <- data.frame(Movie = bottom_ten_runtime$Series_Title, IMDb_Rating = bottom_ten_ratings)
+
+# Order the table by IMDb ratings in descending order
+bottom_ten_table <- bottom_ten_table[order(bottom_ten_table$IMDb_Rating, decreasing = TRUE), ]
+
+# Print the table
+print(bottom_ten_table)
+average_rating <- mean(bottom_ten_ratings)
+
+# Print the average rating
+print(average_rating)
+```
+
+```{r}
+library(scales)
+
+# Create a bar chart for the top ten grossing movies with formatted y-axis labels
+ggplot(top_ten_grossing, aes(x = reorder(Series_Title, Gross), y = Gross)) +
+  geom_bar(stat = "identity", fill = "forestgreen") +
+  labs(title = "Top Ten Grossing Movies",
+       x = "Movie",
+       y = "Gross Earnings") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(labels = scales::comma, breaks = c(0, 250000000, 500000000, 750000000)) +
+  coord_flip()
+```
+
+```{r}
+# Select the top ten movies with the highest gross earnings
+top_ten_grossing <- imdb[order(imdb$Gross, decreasing = TRUE), ][1:10, ]
+
+# Create a dataframe with movie titles and IMDb ratings
+top_ten_ratings_table <- data.frame(Movie = top_ten_grossing$Series_Title, IMDb_Rating = top_ten_grossing$IMDB_Rating)
+
+# Order the table by IMDb ratings in descending order
+top_ten_ratings_table <- top_ten_ratings_table[order(top_ten_ratings_table$IMDb_Rating, decreasing = TRUE), ]
+
+# Print the table
+print(top_ten_ratings_table)
+```
+
+```{r}
+# Select the bottom ten movies with the lowest gross earnings
+bottom_ten_grossing <- imdb[order(imdb$Gross), ][1:10, ]
+
+# Create a bar chart for the bottom ten grossing movies
+ggplot(bottom_ten_grossing, aes(x = reorder(Series_Title, Gross), y = Gross)) +
+  geom_bar(stat = "identity", fill = "firebrick") +
+  labs(title = "Bottom Ten Grossing Movies",
+       x = "Movie",
+       y = "Gross Earnings") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  coord_flip()
+```
+
+```{r}
+bottom_ten_grossing <- imdb[order(imdb$Gross), ][1:10, ]
+
+# Create a dataframe with movie titles and IMDb ratings
+bottom_ten_ratings_table <- data.frame(Movie = bottom_ten_grossing$Series_Title, IMDb_Rating = bottom_ten_grossing$IMDB_Rating)
+
+# Order the table by IMDb ratings in descending order
+bottom_ten_ratings_table <- bottom_ten_ratings_table[order(bottom_ten_ratings_table$IMDb_Rating, decreasing = TRUE), ]
+
+# Print the table
+print(bottom_ten_ratings_table)
+
+```
+
+
+
+
+
+
+
+
+
+
