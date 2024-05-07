@@ -2,31 +2,6 @@
 
 ### Created by Ishan Patel, Ethan Mangelsdorf, Vinayak Trigunayat
 
-## Information about our data set:
-
-## Introduction:
-
-## Data Cleaning:
-
-## Genres:
-
-## Directors:
-
-## Runtime:
-
-## Gross vs IMDb:
-
-## Stars:
-
-## The "Most Common" Movie:
-
-## Potential Limitations:
-
-
-#Final Project Analysis of Top IMDB Movies:
-
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
