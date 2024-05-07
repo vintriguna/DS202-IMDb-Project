@@ -633,6 +633,8 @@ The next part of the analysis focuses on the cast of the movies, made up of indi
 imdb2 <- imdb %>% pivot_longer(cols=starts_with("Star"), values_to="Actor")
 ```
 
+**Popularity:**
+
 We start by finding the most popular Stars by their IMDb score. We can take a look at the average IMDb rating for every Star. We can then calculate the mean IMDb score for each Star, and also get a sense of how many movies they have been in. We filter our list of popular Stars based on them having at least 4 movies in the database.
 
 ```{r}
@@ -642,49 +644,28 @@ imdb2 %>% group_by(Actor) %>% summarise(m = mean(IMDB_Rating), sample_size = n()
 #Filter by having been in >= 4 movies
 imdbPopular <- imdb2 %>% group_by(Actor) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 4) %>% arrange(desc(m))
 ```
-
-
+We can represent the top 10 most popular Stars who have starred in at least 4 movies, by their IMDb score using a barchart. It is worth noting that many of the Stars on this list, such as Orlando Bloom, Carrie Fisher, and Harrison Ford have been part of successful film franchises which has made them more popular. In a sense, this part of the analysis acts as a filter for Stars who have participated in successful franchises. Stars who appear on this list despite not being part of a franchise, such as Charles Chaplin and Takashi Shimura, can be thought of as being especially popular.
 
 ```{r}
-#Create one column containing all actors/actresses
-
-imdb2 <- imdb %>% pivot_longer(cols=starts_with("Star"), values_to="Actor")
-
-#We check how many films the actor has been in and their average score
-imdb2 %>% group_by(Actor) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% arrange(desc(m))
-
-#Filter by having been in >= 4 movies
-imdbPopular <- imdb2 %>% group_by(Actor) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 4) %>% arrange(desc(m))
-
-imdbPopular %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Actor, y = m, fill = Actor)) + geom_bar(stat = "identity") + coord_flip() + xlab("Avg IMDb popularity")
-
-
-#Potential limitation: We are filtering by series actors, such as Star Wars, LOTR, etc., actors who make this list despite not being in a series might be considered extraordinarily good
-
-#We take a look at the most common entries in this list, regardless of their avg. score
-imdb2 %>% group_by(Actor) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 4) %>% arrange(desc(sample_size))
-
+imdbPopular %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Actor, y = m, fill = Actor)) + geom_bar(stat = "identity") + coord_flip() + ylab("Avg IMDb popularity")
 ```
+
+Instead of interpreting popularity as the most critically acclaimed, which could be measured by IMDb score, we can instead interpret it as frequency. We find the Stars who have featured on movies in the dataset most often, and create a barchart of the top 10 such stars. With this interpretation, we see names which are more recognizable than the earlier chart.
 
 ```{r}
 #We take a look at the most common entries in this list, regardless of their avg. score
 mostCommon <- imdb2 %>% group_by(Actor) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 4) %>% arrange(desc(sample_size))
 
-mostCommon %>% head(10) %>% mutate(Actor = fct_reorder(Actor,sample_size)) %>% ggplot(aes(x = Actor, y = sample_size, fill = Actor)) + geom_bar(stat = "identity") + coord_flip() + ylab("Avg IMDb popularity") + theme_bw() #+ scale_fill_brewer("Set3")
+mostCommon %>% head(10) %>% mutate(Actor = fct_reorder(Actor,sample_size)) %>% ggplot(aes(x = Actor, y = sample_size, fill = Actor)) + geom_bar(stat = "identity") + coord_flip() + ylab("Number of Movies") + theme_bw() #+ scale_fill_brewer("Set3")
 
 ```
 
 
-#Filter by having been in >= 4 movies
+**Star popularity across the ages: ** 
 
-```{r}
-imdbPopular <- imdb2 %>% group_by(Actor) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 4) %>% arrange(desc(m))
+We can filter Stars by their IMDb score, and also consider the time period in which the film was released. In this way, we can create charts summarizing the Top 10 Stars for 3 different time periods.
 
-imdbPopular %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Actor, y = m, fill = Actor)) + geom_bar(stat = "identity") + coord_flip() + ylab("Avg IMDb popularity") + theme_bw() #+ scale_fill_brewer("Set3")
-```
-
-
-**Actor popularity across the ages ** 
+The time period from 1911 to 1939 represents the start of the 'Silent Era' period, up to the end of the 'Pre-War' period. 
 
 ```{r}
 
@@ -696,9 +677,11 @@ era1 %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Ac
 
 ```
 
+The next time period in our analysis is the 1970s.
+
 ```{r}
 
-#Filtered by start of 'Silent Era' and 'Pre-War', reducing the sample size requirement
+#Filtered by start of '1970' and end of '1979', reducing the sample size requirement
 
 era2 <- imdb2 %>% group_by(Actor) %>% filter(Released_Year >= 1970, Released_Year <= 1979) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 2) %>% arrange(desc(m))
 
@@ -706,9 +689,11 @@ era2 %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Ac
 
 ```
 
+The next time period in our analysis is the 1980s.
+
 ```{r}
 
-#Filtered by start of 'Silent Era' and 'Pre-War', reducing the sample size requirement
+#Filtered by start of '1980' and '1989', reducing the sample size requirement
 
 era3 <- imdb2 %>% group_by(Actor) %>% filter(Released_Year >= 1980, Released_Year <= 1989) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 2) %>% arrange(desc(m))
 
@@ -716,9 +701,12 @@ era3 %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Ac
 
 ```
 
+
+The final time period in our analysis is the 2000s.
+
 ```{r}
 
-#Filtered by start of 'Silent Era' and 'Pre-War', reducing the sample size requirement
+#Filtered by start of '2000' and '2009', reducing the sample size requirement
 
 era4 <- imdb2 %>% group_by(Actor) %>% filter(Released_Year >= 2000, Released_Year <= 2009) %>% summarise(m = mean(IMDB_Rating), sample_size = n()) %>% filter(sample_size >= 2) %>% arrange(desc(m))
 
@@ -726,7 +714,13 @@ era4 %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Ac
 
 ```
 
-# Comparing metascore to IMDb score
+
+*Potential Limitations: *
+Here we explore some of the limitations of our analysis:
+
+ - Since IMDb was created in 1990, all of the customer reviews suffer from recency bias. Hence we would expect that older films would receive fewer reviews. This would impact the IMDb score and the number of votes.
+
+ - Another of the potential limitations of our analysis comes about from having used the IMDb score rather than the Metascore. The IMDb score is based on an aggregate of user reviews, whereas the Metascore is a weighted average of critic reviews calculated by Metacritic. Since Metascore relies on critical reviews, instead of IMDb user reviews, this would impact our analysis and popularity. If we conducted the analysis using Metascore, our results would have been different. We can examine the difference between the IMDb score and Metascore by comparing them in a scatterplot. 'Diff' refers to the Metascore subtracted by the IMDb score multiplied by 10. A positive diff represents a movie that was more popular with critics than with IMDb users, whereas a negative diff represents a movie that was more popular with IMDb users than with critics.
 
 ```{r}
 
