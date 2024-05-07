@@ -537,6 +537,8 @@ Like the top and bottom ten runtimes, we look at the top ten grossing movies to 
 ```{r}
 library(scales)
 
+top_ten_grossing <- imdb[order(imdb$Gross, decreasing = TRUE), ][1:10, ]
+
 # Create a bar chart for the top ten grossing movies with formatted y-axis labels
 ggplot(top_ten_grossing, aes(x = reorder(Series_Title, Gross), y = Gross)) +
   geom_bar(stat = "identity", fill = "forestgreen") +
