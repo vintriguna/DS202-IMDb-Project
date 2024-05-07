@@ -714,6 +714,16 @@ era4 %>% head(10) %>% mutate(Actor = fct_reorder(Actor,m)) %>% ggplot(aes(x = Ac
 
 ```
 
+*Most Common Movie*
+
+We can use all of the data we have analyzed so far to come up with an idea of what the most "common movie might look like. Of course, this is not what we would actually expect any movie to look like since there are many factors involved which we haven't accounted for, but it helps paint a better picture of the data.
+
+**Directed by: Alfred Hitchcock**
+**Genre: Drama**
+**Cast: Robert De Niro, Tom Hanks, Al Pacino, Clint Eastwood**
+**Runtime: 2 hours**
+**IMDb Rating: 7.96**
+
 
 *Potential Limitations: *
 Here we explore some of the limitations of our analysis:
